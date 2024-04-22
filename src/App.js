@@ -1,25 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import axios from "axios";
+import { fetchUsersSuccess } from "./actions"; // импортируйте действие, которые вы создали для получения данных
 
-function App() {
+export const App = () => {
+  const dispatch = useDispatch();
+  const users = useSelector((state) => state.users); // доступ к данным пользователей через selector
+
+  useEffect(() => {
+    axios
+      .get("https://jsonplaceholder.typicode.com/users")
+      .then((response) => {
+        dispatch(fetchUsersSuccess(response.data)); // отправляем действие со списком пользователей
+      })
+      .catch((error) => console.error(error));
+  }, [dispatch]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="users">
+      {users.map((user) => (
+        <div key={user.id}> /* Выводите данные пользователя */ </div>
+      ))}
     </div>
   );
-}
+};
 
 export default App;
